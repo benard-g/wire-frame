@@ -37,6 +37,11 @@ add_executable(
     include/wf/core/Position.hpp
     include/wf/core/Line.hpp
     include/wf/core/EventManager.hpp
+
+    # Graphics
+    include/wf/gfx/Window.hpp src/gfx/Window.cpp
+    include/wf/gfx/event/WindowClosed.hpp
+    include/wf/gfx/event/WindowKeyPressed.hpp
 )
 
 target_include_directories(
