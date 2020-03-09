@@ -42,6 +42,10 @@ add_executable(
     include/wf/gfx/Window.hpp src/gfx/Window.cpp
     include/wf/gfx/event/WindowClosed.hpp
     include/wf/gfx/event/WindowKeyPressed.hpp
+
+    # 3D
+    include/wf/space/shape/IShape.hpp
+#    include/wf/space/shape/Cube.hpp src/space/shape/Cube.cpp
 )
 
 target_include_directories(
