@@ -36,6 +36,7 @@ add_executable(
     include/wf/core/Orientation.hpp
     include/wf/core/Position.hpp
     include/wf/core/Line.hpp
+    include/wf/core/EventManager.hpp
 )
 
 target_include_directories(
