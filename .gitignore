@@ -1,0 +1,10 @@
+# Build
+/*build*
+
+# vcpkg
+/.vcpkg
+
+# IDE
+.idea
+.vscode
+.vs
