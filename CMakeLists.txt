@@ -31,6 +31,11 @@ add_executable(
     # Main
     src/main.cpp
     include/Config.hpp src/Config.cpp
+
+    # Core
+    include/wf/core/Orientation.hpp
+    include/wf/core/Position.hpp
+    include/wf/core/Line.hpp
 )
 
 target_include_directories(
