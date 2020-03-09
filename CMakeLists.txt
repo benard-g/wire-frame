@@ -44,8 +44,16 @@ add_executable(
     include/wf/gfx/event/WindowKeyPressed.hpp
 
     # 3D
+    include/wf/space/Scene.hpp src/space/Scene.cpp
+    include/wf/space/Mutator.hpp src/space/Mutator.cpp
+
+    # 3D - Shapes
     include/wf/space/shape/IShape.hpp
-#    include/wf/space/shape/Cube.hpp src/space/shape/Cube.cpp
+    include/wf/space/shape/Cube.hpp src/space/shape/Cube.cpp
+
+    # Utils
+    include/wf/utils/DistributedContainer.hpp
+    include/wf/utils/Randomizer.hpp src/utils/Randomizer.cpp
 )
 
 target_include_directories(
