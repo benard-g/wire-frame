@@ -1,19 +1,20 @@
 #pragma once
 
-#include <cstdint>
-#include <vector>
+#include <functional>
 
 #include "wf/core/Line.hpp"
 
 namespace wf::space::shape {
     class IShape {
     public:
+        using LineInserter = std::function<void (wf::core::Line const &line)>;
+
         /*!
-         * Make the Shape generate its lines and insert them in the write_iterator.
+         * Make the Shape generate its lines.
          *
-         * @param lineInserter
+         * @param insertLine
          */
-        virtual void generateLines(std::back_insert_iterator<std::vector<wf::core::Line>> lineInserter) = 0;
+        virtual void generateLines(LineInserter const &insertLine) = 0;
 
     public:
         virtual ~IShape() noexcept = default;
