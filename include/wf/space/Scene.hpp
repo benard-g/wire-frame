@@ -17,7 +17,11 @@ namespace wf::space {
             wf::core::Orientation const &rotateSpeed
         );
 
-        void addShape(std::unique_ptr<wf::space::shape::IShape> &&shape, Mutator &&mutator);
+        void addShape(
+            std::unique_ptr<wf::space::shape::IShape> &&shape,
+            wf::core::Position const &position,
+            wf::core::Orientation const &orientation
+        );
 
         void update();
 

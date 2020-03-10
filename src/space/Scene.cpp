@@ -26,10 +26,14 @@ wf::space::Scene::Scene(
 
 double const wf::space::Scene::Z_MAX = 2'500;
 
-void wf::space::Scene::addShape(std::unique_ptr<wf::space::shape::IShape> &&shape, Mutator &&mutator) {
+void wf::space::Scene::addShape(
+    std::unique_ptr<wf::space::shape::IShape> &&shape,
+    wf::core::Position const &position,
+    wf::core::Orientation const &orientation
+) {
     m_shapesWithMutators.addItem(ShapeWithMutator{
         .shape=std::move(shape),
-        .mutator=std::move(mutator),
+        .mutator=wf::space::Mutator(position, orientation),
         .isMoving=false,
         .moveSpeed=wf::core::Position{ .x=0, .y=0, .z=0 },
         .rotateSpeed=wf::core::Orientation{ .x=0, .y=0, .z=0 },

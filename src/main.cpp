@@ -26,36 +26,30 @@ void run(wf::Config const &config) {
     scene.registerEvents(eventManager);
 
 //    for (int i=0; i < 1000; ++i) {
-        scene.addShape(
-            std::make_unique<wf::space::shape::Cube>(
-                150,
-                sf::Color::Red
-            ),
-            wf::space::Mutator(
-                wf::core::Position{ .x=0, .y=0, .z=0 },
-                wf::core::Orientation{ .x=0, .y=0, .z=0 }
-            )
-        );
-        scene.addShape(
-            std::make_unique<wf::space::shape::Cube>(
-                150,
-                sf::Color::Green
-            ),
-            wf::space::Mutator(
-                wf::core::Position{ .x=-250, .y=0, .z=0 },
-                wf::core::Orientation{ .x=0, .y=0, .z=0 }
-            )
-        );
-        scene.addShape(
-            std::make_unique<wf::space::shape::Cube>(
-                150,
-                sf::Color::Blue
-            ),
-            wf::space::Mutator(
-                wf::core::Position{ .x=250, .y=0, .z=0 },
-                wf::core::Orientation{ .x=0, .y=0, .z=0 }
-            )
-        );
+    scene.addShape(
+        std::make_unique<wf::space::shape::Cube>(
+            150,
+            sf::Color::Red
+        ),
+        wf::core::Position{ .x=-300, .y=0, .z=0 },
+        wf::core::Orientation{ .x=0, .y=0, .z=0 }
+    );
+    scene.addShape(
+        std::make_unique<wf::space::shape::Cube>(
+            150,
+            sf::Color::Green
+        ),
+        wf::core::Position{ .x=0, .y=0, .z=0 },
+        wf::core::Orientation{ .x=0, .y=0, .z=0 }
+    );
+    scene.addShape(
+        std::make_unique<wf::space::shape::Cube>(
+            150,
+            sf::Color::Blue
+        ),
+        wf::core::Position{ .x=300, .y=0, .z=0 },
+        wf::core::Orientation{ .x=0, .y=0, .z=0 }
+    );
 //    }
 
     while (window.isOpen()) {
