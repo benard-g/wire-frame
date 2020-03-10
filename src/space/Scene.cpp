@@ -82,7 +82,7 @@ inline wf::core::Position wf::space::Scene::transposePositionInWindow(wf::core::
 }
 
 void wf::space::Scene::update() {
-    m_shapesWithMutators.resetCache();
+    m_shapesWithMutators.resetComputed();
     m_shapesWithMutators.iterItemsParallel([this](auto &shapeWithMutator, auto lineInserter) {
         if (shapeWithMutator.isMoving) {
             shapeWithMutator.mutator.move(shapeWithMutator.moveSpeed);
@@ -121,7 +121,7 @@ void wf::space::Scene::update() {
 }
 
 void wf::space::Scene::render() {
-    m_shapesWithMutators.iterCached([this](auto const &line) {
+    m_shapesWithMutators.iterComputed([this](auto const &line) {
         m_window.drawLine(line);
     });
 }
