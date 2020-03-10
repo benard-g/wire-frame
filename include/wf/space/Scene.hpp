@@ -12,6 +12,7 @@ namespace wf::space {
         Scene(
             wf::gfx::Window &window,
             wf::utils::Randomizer &randomizer,
+            std::size_t batchSize,
             wf::core::Position const &moveSpeed,
             wf::core::Orientation const &rotateSpeed
         );

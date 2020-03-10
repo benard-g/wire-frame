@@ -15,6 +15,7 @@ void run(wf::Config const &config) {
     wf::space::Scene scene(
         window,
         randomizer,
+        300,
         wf::core::Position{ .x=5, .y=5, .z=5 },
         wf::core::Orientation{ .x=0.1, .y=0.1, .z=0.1 }
     );

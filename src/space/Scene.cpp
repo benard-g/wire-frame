@@ -5,6 +5,7 @@
 wf::space::Scene::Scene(
     wf::gfx::Window &window,
     wf::utils::Randomizer &randomizer,
+    std::size_t batchSize,
     wf::core::Position const &moveSpeed,
     wf::core::Orientation const &rotateSpeed
 ):
@@ -20,7 +21,7 @@ wf::space::Scene::Scene(
         .zMin=-(Z_MAX / 2) + 1,
         .zMax=(Z_MAX / 2),
     }),
-    m_shapesWithMutators()
+    m_shapesWithMutators(batchSize)
 {}
 
 double const wf::space::Scene::Z_MAX = 2'500;

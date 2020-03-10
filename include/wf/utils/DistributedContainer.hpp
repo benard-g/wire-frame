@@ -1,12 +1,15 @@
 #pragma once
 
 #include <functional>
+#include <future>
 #include <vector>
 
 namespace wf::utils {
     template <typename TItem, typename TCache>
     class DistributedContainer {
     public:
+        explicit DistributedContainer(std::size_t batchSize);
+
         void addItem(TItem &&item);
 
         using ItemHandler = std::function<void (TItem &item)>;
@@ -22,7 +25,7 @@ namespace wf::utils {
 
     public:
         // Coplien
-        DistributedContainer() = default;
+        DistributedContainer() = delete;
         ~DistributedContainer() noexcept = default;
         DistributedContainer(DistributedContainer const &) = delete;
         DistributedContainer &operator=(DistributedContainer const &) = delete;
@@ -30,8 +33,10 @@ namespace wf::utils {
         DistributedContainer &operator=(DistributedContainer &&) noexcept = delete;
 
     private:
+        std::size_t const BATCH_SIZE;
+
         std::vector<TItem> m_items;
-        std::vector<TCache> m_cached;
+        std::vector<std::vector<wf::core::Line>> m_cached;
     };
 }
 
@@ -40,13 +45,24 @@ namespace wf::utils {
 //
 
 template <typename TItem, typename TCache>
+wf::utils::DistributedContainer<TItem, TCache>::DistributedContainer(std::size_t batchSize):
+    BATCH_SIZE(batchSize)
+{}
+
+template <typename TItem, typename TCache>
 void wf::utils::DistributedContainer<TItem, TCache>::addItem(TItem &&item) {
     m_items.emplace_back(std::forward<TItem &&>(item));
+
+    if (m_items.size() % BATCH_SIZE == 1) {
+        m_cached.emplace_back(std::vector<TCache>{});
+    }
 }
 
 template <typename TItem, typename TCache>
 void wf::utils::DistributedContainer<TItem, TCache>::resetCache() {
-    m_cached.clear();
+    for (auto &batch : m_cached) {
+        batch.clear();
+    }
 }
 
 template <typename TItem, typename TCache>
@@ -58,17 +74,30 @@ void wf::utils::DistributedContainer<TItem, TCache>::iterItems(ItemHandler const
 
 template <typename TItem, typename TCache>
 void wf::utils::DistributedContainer<TItem, TCache>::iterItemsParallel(ItemHandlerParallel const &handler) {
-    auto inserter = std::back_inserter(m_cached);
+    std::vector<std::future<void>> futures;
 
-    // TODO use threads for parallelization
-    for (auto &item : m_items) {
-        handler(item, inserter);
+    for (std::size_t batchIdx = 0; batchIdx < m_cached.size(); ++batchIdx) {
+        futures.emplace_back(std::async(std::launch::async, [this, batchIdx, handler]() {
+            auto inserter = std::back_inserter(m_cached[batchIdx]);
+            auto itemsBegin = std::begin(m_items) + batchIdx * BATCH_SIZE;
+            auto itemsEnd = m_items.size() < (batchIdx + 1) * BATCH_SIZE ? std::end(m_items) : itemsBegin + BATCH_SIZE;
+
+            for (auto itemIterator = itemsBegin; itemIterator != itemsEnd; ++itemIterator) {
+                handler(*itemIterator, inserter);
+            }
+        }));
+    }
+
+    for (auto &future : futures) {
+        future.wait();
     }
 }
 
 template <typename TItem, typename TCache>
 void wf::utils::DistributedContainer<TItem, TCache>::iterCached(CachedHandler const &handler) const {
-    for (auto const &cached : m_cached) {
-        handler(cached);
+    for (auto const &batch : m_cached) {
+        for (auto const &cached : batch) {
+            handler(cached);
+        }
     }
 }
