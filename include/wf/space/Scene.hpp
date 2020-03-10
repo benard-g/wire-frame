@@ -55,7 +55,7 @@ namespace wf::space {
 
         static double const Z_MAX;
 
-        [[nodiscard]] inline wf::core::Position transposePositionInWindow(wf::core::Position const &position) const noexcept;
+        [[nodiscard]] wf::core::Position transposePositionInWindow(wf::core::Position const &position) const noexcept;
 
     private:
         struct ShapeWithMutator {
@@ -66,6 +66,17 @@ namespace wf::space {
             wf::core::Orientation rotateSpeed;
         };
 
+        void applyMovements(ShapeWithMutator &shapeWithMutator);
+
         wf::utils::DistributedContainer<ShapeWithMutator, wf::core::Line> m_shapesWithMutators;
+
+    private:
+        struct InputMutations {
+            wf::core::Position position;
+            wf::core::Orientation orientation;
+        };
+
+        [[nodiscard]] InputMutations getInputMutations() const noexcept;
+        void applyInputMutations(InputMutations const &inputMutations, ShapeWithMutator &shapeWithMutator) const noexcept;
     };
 }

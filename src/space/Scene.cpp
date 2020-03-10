@@ -81,34 +81,117 @@ inline wf::core::Position wf::space::Scene::transposePositionInWindow(wf::core::
     };
 }
 
-void wf::space::Scene::update() {
-    m_shapesWithMutators.resetComputed();
-    m_shapesWithMutators.iterItemsParallel([this](auto &shapeWithMutator, auto lineInserter) {
-        if (shapeWithMutator.isMoving) {
-            shapeWithMutator.mutator.move(shapeWithMutator.moveSpeed);
-            shapeWithMutator.mutator.rotate(shapeWithMutator.rotateSpeed);
+inline void wf::space::Scene::applyMovements(wf::space::Scene::ShapeWithMutator &shapeWithMutator) {
+    shapeWithMutator.mutator.move(shapeWithMutator.moveSpeed);
+    shapeWithMutator.mutator.rotate(shapeWithMutator.rotateSpeed);
 
-            // Make the shape change direction when it reaches a wall
-            auto &position = shapeWithMutator.mutator.getPosition();
-            if (position.x < m_sceneBoundaries.xMin) {
-                shapeWithMutator.moveSpeed.x = m_moveSpeed.x;
-            }
-            else if (position.x > m_sceneBoundaries.xMax) {
-                shapeWithMutator.moveSpeed.x = -m_moveSpeed.x;
-            }
-            if (position.y < m_sceneBoundaries.yMin) {
-                shapeWithMutator.moveSpeed.y = m_moveSpeed.y;
-            }
-            else if (position.y > m_sceneBoundaries.yMax) {
-                shapeWithMutator.moveSpeed.y = -m_moveSpeed.y;
-            }
-            if (position.z < m_sceneBoundaries.zMin) {
-                shapeWithMutator.moveSpeed.z = m_moveSpeed.z;
-            }
-            else if (position.z > m_sceneBoundaries.zMax) {
-                shapeWithMutator.moveSpeed.z = -m_moveSpeed.z;
-            }
+    // Make the shape change direction when it reaches a wall
+    auto &position = shapeWithMutator.mutator.getPosition();
+
+    if (position.x < m_sceneBoundaries.xMin) {
+        shapeWithMutator.moveSpeed.x = m_moveSpeed.x;
+    }
+    else if (position.x > m_sceneBoundaries.xMax) {
+        shapeWithMutator.moveSpeed.x = -m_moveSpeed.x;
+    }
+
+    if (position.y < m_sceneBoundaries.yMin) {
+        shapeWithMutator.moveSpeed.y = m_moveSpeed.y;
+    }
+    else if (position.y > m_sceneBoundaries.yMax) {
+        shapeWithMutator.moveSpeed.y = -m_moveSpeed.y;
+    }
+
+    if (position.z < m_sceneBoundaries.zMin) {
+        shapeWithMutator.moveSpeed.z = m_moveSpeed.z;
+    }
+    else if (position.z > m_sceneBoundaries.zMax) {
+        shapeWithMutator.moveSpeed.z = -m_moveSpeed.z;
+    }
+}
+
+inline wf::space::Scene::InputMutations wf::space::Scene::getInputMutations() const noexcept {
+    double xPos = 0;
+    double yPos = 0;
+    double zPos = 0;
+
+    double xRot = 0;
+    double yRot = 0;
+    double zRot = 0;
+
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Left)) {
+        xPos -= m_moveSpeed.x;
+    }
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Right)) {
+        xPos += m_moveSpeed.x;
+    }
+
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Up)) {
+        yPos -= m_moveSpeed.y;
+    }
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Down)) {
+        yPos += m_moveSpeed.y;
+    }
+
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Home)) {
+        zPos -= m_moveSpeed.z;
+    }
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::End)) {
+        zPos += m_moveSpeed.z;
+    }
+
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::W)) {
+        xRot -= m_rotateSpeed.x;
+    }
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::S)) {
+        xRot += m_rotateSpeed.x;
+    }
+
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D)) {
+        yRot -= m_rotateSpeed.y;
+    }
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::A)) {
+        yRot += m_rotateSpeed.y;
+    }
+
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::E)) {
+        zRot += m_rotateSpeed.z;
+    }
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Q)) {
+        zRot -= m_rotateSpeed.z;
+    }
+
+    return {
+        .position={
+            .x=xPos,
+            .y=yPos,
+            .z=zPos,
+        },
+        .orientation={
+            .x=xRot,
+            .y=yRot,
+            .z=zRot,
+        },
+    };
+}
+
+inline void wf::space::Scene::applyInputMutations(
+    wf::space::Scene::InputMutations const &inputMutations,
+    wf::space::Scene::ShapeWithMutator &shapeWithMutator
+) const noexcept {
+    shapeWithMutator.mutator.move(inputMutations.position);
+}
+
+void wf::space::Scene::update() {
+    InputMutations const inputMutations = getInputMutations();
+
+    m_shapesWithMutators.resetComputed();
+    m_shapesWithMutators.iterItemsParallel([this, &inputMutations](auto &shapeWithMutator, auto lineInserter) {
+        if (shapeWithMutator.isMoving) {
+            applyMovements(shapeWithMutator);
         }
+
+        applyInputMutations(inputMutations, shapeWithMutator);
 
         shapeWithMutator.shape->generateLines([this, &shapeWithMutator, &lineInserter](wf::core::Line const &line) {
             lineInserter = wf::core::Line{
