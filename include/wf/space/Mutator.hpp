@@ -26,7 +26,14 @@ namespace wf::space {
         Mutator &operator=(Mutator &&) noexcept = default;
 
     private:
+        [[nodiscard]] wf::core::Position applyTranslation(wf::core::Position const &position) const noexcept;
+        [[nodiscard]] wf::core::Position applyRotation(wf::core::Position const &pos) const noexcept;
+
+        void updateRotationMatrix();
+
+    private:
         wf::core::Position m_position;
         wf::core::Orientation m_orientation;
+        double m_rotationMatrix[3][3];
     };
 }

@@ -180,6 +180,7 @@ inline void wf::space::Scene::applyInputMutations(
     wf::space::Scene::ShapeWithMutator &shapeWithMutator
 ) const noexcept {
     shapeWithMutator.mutator.move(inputMutations.position);
+    shapeWithMutator.mutator.rotate(inputMutations.orientation);
 }
 
 void wf::space::Scene::update() {
