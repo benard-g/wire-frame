@@ -62,6 +62,14 @@ namespace wf::space {
         [[nodiscard]] wf::core::Position transposePositionInWindow(wf::core::Position const &position) const noexcept;
 
     private:
+        static sf::Color const SCENE_BOUNDARIES_COLOR;
+        static double const SCENE_BOUNDARIES_NB_LINES_WIDTH;
+        static double const SCENE_BOUNDARIES_NB_LINES_HEIGHT;
+        static double const SCENE_BOUNDARIES_NB_LINES_DEPTH;
+
+        void drawSceneBoundaries();
+
+    private:
         struct ShapeWithMutator {
             std::unique_ptr<wf::space::shape::IShape> shape;
             wf::space::Mutator mutator;
@@ -81,6 +89,7 @@ namespace wf::space {
         };
 
         [[nodiscard]] InputMutations getInputMutations() const noexcept;
+
         void applyInputMutations(InputMutations const &inputMutations, ShapeWithMutator &shapeWithMutator) const noexcept;
     };
 }
