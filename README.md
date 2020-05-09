@@ -2,6 +2,8 @@
 
 A minimalist C++ engine.
 
+![Preview](.github/screenshot.jpg)
+
 ## Quickstart
 
 ### Disclaimer
