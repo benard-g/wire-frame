@@ -1,10 +1,10 @@
 # wire-frame
 
-A minimalist C++ engine that renders wire-frames shapes (mostly cubes at the moment).
+A minimalist C++ engine that renders wire-frame shapes ✨ (well... mostly cubes at the moment...).
 
 This is a project I did in my first year of computer science school using C. Because I liked it very much, I tried to resurrect it a while ago using C++, and here it is !
 
-I does not have all the functionnality that the previous one had, and a lot of things could be added or improved. Maybe I'll get back working on it on day.
+I does not have all the functionnality that the previous one had, and a lot of things could be added or improved. Maybe I'll get back working on it one day.
 
 ![Preview](.github/screenshot.jpg)
 
