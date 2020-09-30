@@ -20,6 +20,7 @@ endif ()
 #
 # DEPENDENCIES
 #
+find_package(Threads REQUIRED)
 find_package(SFML COMPONENTS system window graphics audio REQUIRED)
 
 #
@@ -63,6 +64,6 @@ target_include_directories(
 
 target_link_libraries(
     ${PROJECT_NAME}
-    # SFML
-    PRIVATE sfml-system sfml-window sfml-graphics sfml-audio
+    PUBLIC Threads::Threads
+    PUBLIC sfml-system sfml-window sfml-graphics sfml-audio
 )
